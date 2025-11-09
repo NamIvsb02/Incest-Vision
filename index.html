@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700" rel="stylesheet" />
+    <title>Insect Vision</title>
+    <link rel="stylesheet" href="src/output.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+  </head>
+  <body class="min-h-screen bg-gray-600">
+    <header class="bg-green-600 flex justify-center">
+      <div class="flex justify-between w-4/5 items-center">
+        <div class="flex items-center justify-center my-2">
+          <img class="h-25 w-auto object-cover" src="./src/img/logonbg.png" alt="logo" />
+          <p class="text-5xl font-medium text-white">Insect Vision</p>
+        </div>
+
+        <div>
+          <ul class="flex justify-center items-center [&>li]:mx-4 [&>li]:text-2xl [&>li]:text-white [&>li]:hover:text-green-400 [&>li]:text-3xl">
+            <li><a href="#!">Home</a></li>
+            <li><a href="#!">Identify Insect</a></li>
+            <li><a href="#!">Identify Mushroom</a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <section class="mt-6">
+      <div class="max-w-3xl bg-white mx-auto  rounded-3xl flex flex-col items-center">
+        <!-- <div class="flex items-center flex-col"> -->
+        <h1 class="text-center font-semibold text-3xl my-5">Identify By Picture</h1>
+        <label for="upload" class="text-center max-w-2xs p-5 bg-blue-400 rounded-full cursor-pointer text-white text-2xl">Upload picture</label>
+        <input type="file" accept="image/*" id="upload" class="hidden" />
+        <!-- </div> -->
+        <div class="preview-container flex justify-center my-2">
+          <img class="preview object-cover max-h-96 hidden rounded-xl" src="" alt="preview">
+        </div>
+        <button type="button" class=" max-w-2xs sub py-5 px-7 mb-2 cursor-pointer bg-orange-300 text-2xl text-white rounded-full"> Identify</button>
+        <div id="label-container" class="text-center text-3xl text-black font-semibold"></div>
+        <div class="text-center text-2xl font-semibold my-5 text-gray-700">Teachable Machine Image Model</div>
+      </div>
+        
+      <script>
+        const inputFile = document.querySelector("#upload");
+        const previewPic = document.querySelector(".preview");
+        const subBtn = document.querySelector(".sub");
+
+        inputFile.addEventListener("change", function() {
+          const file = inputFile.files[0];
+          if(file) {
+            previewPic.src = URL.createObjectURL(file);
+            previewPic.classList.remove("hidden");
+          }
+        })
+
+
+        //===============================================================
+          const URLpath = "./my_model/";
+          let model, maxPredictions;
+
+          async function loadModel() {
+            const modelURL = URLpath + "model.json";
+            const metadataURL = URLpath + "metadata.json";
+            model = await tmImage.load(modelURL, metadataURL);
+            maxPredictions = model.getTotalClasses();
+          }
+
+          // Khi bấm Identify => nếu có ảnh thì model sẽ identify ảnh đó
+          subBtn.addEventListener("click", async function () {
+            if(previewPic.classList.contains("hidden")) {
+            alert("Please upload image first!");
+            return; 
+          }
+
+            if (!model) {
+              await loadModel(); 
+            }
+
+            const prediction = await model.predict(previewPic);
+            const labelContainer = document.getElementById("label-container");
+            labelContainer.innerHTML = ""; // clear kết quả cũ
+
+            prediction.forEach((p) => {
+              const div = document.createElement("div");
+              div.textContent = `${p.className}: ${p.probability.toFixed(2)*100}%`;
+              labelContainer.appendChild(div);
+            });
+          });
+    </script>
+  </body>
+</html>
