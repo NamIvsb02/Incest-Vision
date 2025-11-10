@@ -1,1 +1,1 @@
-{"tfjsVersion":"1.7.4","tmVersion":"2.4.10","packageVersion":"0.8.4-alpha2","packageName":"@teachablemachine/image","timeStamp":"2025-11-09T07:09:49.376Z","userMetadata":{},"modelName":"tm-my-image-model","labels":["Spider","Bee","Mantis"],"imageSize":224}
+{"tfjsVersion":"1.7.4","tmVersion":"2.4.10","packageVersion":"0.8.4-alpha2","packageName":"@teachablemachine/image","timeStamp":"2025-11-10T07:49:08.542Z","userMetadata":{},"modelName":"tm-my-image-model","labels":["Spider","Mantis","Centipede","Bee","Butterfly"],"imageSize":224}
